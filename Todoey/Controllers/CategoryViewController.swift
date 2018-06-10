@@ -8,8 +8,9 @@
 
 import UIKit
 import RealmSwift
+//import SwipeCellKit
 
-class CategoryViewController: UITableViewController {
+class CategoryViewController: SwipeTableViewController {
 
     let realm = try! Realm()
     
@@ -21,6 +22,8 @@ class CategoryViewController: UITableViewController {
         super.viewDidLoad()
 
         loadCategories()
+        
+        tableView.rowHeight = 80
     }
 
     //MARK: TableView Datasource Methods
@@ -29,12 +32,11 @@ class CategoryViewController: UITableViewController {
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "CategoryCell", for: indexPath)
-        
-//        let category = categories[indexPath.row]
-//        cell.textLabel?.text = category.name
+
+        let cell = super.tableView(tableView, cellForRowAt: indexPath)
 
         cell.textLabel?.text = categories?[indexPath.row].name ?? "No categories added yet."
+        
         return cell
     }
     
@@ -55,6 +57,48 @@ class CategoryViewController: UITableViewController {
     
     //MARK: Data Manipulation Methods
 
+    
+    func save(category: Category) {
+        do {
+            try realm.write {
+                realm.add(category)
+            }
+        } catch {
+            print("Error saving context \(error)")
+        }
+        
+        self.tableView.reloadData()
+    }
+    
+    //    func loadCategories(with request: NSFetchRequest<Category> = Category.fetchRequest()) {
+    func loadCategories() {
+        categories = realm.objects(Category.self)
+        
+        //        do {
+        //            categories = try context.fetch(request)
+        //        } catch {
+        //            print("Error fetching data from context \(error)")
+        //        }
+        //
+        tableView.reloadData()
+    }
+
+    //MARK: Delete data from swipe
+    override func updateModel(at indexPath: IndexPath) {
+        super.updateModel(at: indexPath)
+        if let category = self.categories?[indexPath.row] {
+            do {
+                try self.realm.write {
+                    self.realm.delete(category)
+                }
+            } catch {
+                print("Error deleting category, \(error)")
+            }
+            
+            //                tableView.reloadData()
+        }
+    }
+    
     //MARK: Add New Categories
     @IBAction func addButtonPressed(_ sender: UIBarButtonItem) {
         var textField = UITextField()
@@ -78,30 +122,5 @@ class CategoryViewController: UITableViewController {
         present(alert, animated: true, completion: nil)
     }
 
-    func save(category: Category) {
-        do {
-            try realm.write {
-                realm.add(category)
-            }
-        } catch {
-            print("Error saving context \(error)")
-        }
-        
-        self.tableView.reloadData()
-    }
-    
-//    func loadCategories(with request: NSFetchRequest<Category> = Category.fetchRequest()) {
-    func loadCategories() {
-         categories = realm.objects(Category.self)
-        
-//        do {
-//            categories = try context.fetch(request)
-//        } catch {
-//            print("Error fetching data from context \(error)")
-//        }
-//        
-//        tableView.reloadData()
-    }
-    
-    
 }
+
