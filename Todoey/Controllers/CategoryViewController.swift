@@ -8,7 +8,7 @@
 
 import UIKit
 import RealmSwift
-//import SwipeCellKit
+import ChameleonFramework
 
 class CategoryViewController: SwipeTableViewController {
 
@@ -22,8 +22,8 @@ class CategoryViewController: SwipeTableViewController {
         super.viewDidLoad()
 
         loadCategories()
-        
-        tableView.rowHeight = 80
+
+//        tableView.separatorStyle = .none
     }
 
     //MARK: TableView Datasource Methods
@@ -34,7 +34,9 @@ class CategoryViewController: SwipeTableViewController {
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
 
         let cell = super.tableView(tableView, cellForRowAt: indexPath)
-
+        
+        cell.backgroundColor = UIColor(hexString: categories?[indexPath.row].colour ?? "2D8CF5")
+        
         cell.textLabel?.text = categories?[indexPath.row].name ?? "No categories added yet."
         
         return cell
@@ -47,8 +49,9 @@ class CategoryViewController: SwipeTableViewController {
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+//        let destinationVC = segue.destination as! SwipeTableViewController // ToDoListViewController
         let destinationVC = segue.destination as! ToDoListViewController
-    
+
         
         if let indexPath = tableView.indexPathForSelectedRow {
             destinationVC.selectedCategory = categories?[indexPath.row]
@@ -109,7 +112,8 @@ class CategoryViewController: SwipeTableViewController {
 //            What will happen once the user clicks the Add category button on our UIAlert
             let newCategory = Category()
             newCategory.name = textField.text!
-
+            newCategory.colour = UIColor.randomFlat.hexValue()
+            
             self.save(category: newCategory)
         }
         

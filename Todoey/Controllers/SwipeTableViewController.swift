@@ -14,6 +14,9 @@ class SwipeTableViewController: UITableViewController, SwipeTableViewCellDelegat
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        tableView.rowHeight = 80
+        tableView.separatorStyle = .none
+
     }
     
     //MARK: TableView Datasource Methods
@@ -23,7 +26,7 @@ class SwipeTableViewController: UITableViewController, SwipeTableViewCellDelegat
 //        cell.textLabel?.text = categories?[indexPath.row].name ?? "No categories added yet."
         
         cell.delegate = self
-        
+
         return cell
     }
     

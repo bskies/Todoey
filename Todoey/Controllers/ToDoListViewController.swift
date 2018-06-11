@@ -8,8 +8,9 @@
 
 import UIKit
 import RealmSwift
+import ChameleonFramework
 
-class ToDoListViewController: UITableViewController {
+class ToDoListViewController: SwipeTableViewController {
 
 //    var itemArray = ["Run a marathon","Drink tea", "Don't go to work"]
     var todoItems: Results<Item>?
@@ -38,17 +39,56 @@ class ToDoListViewController: UITableViewController {
     }
 
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "ToDoItemCell", for: indexPath)
+//        let cell = tableView.dequeueReusableCell(withIdentifier: "Cell", for: indexPath)
+
+        let cell = super.tableView(tableView, cellForRowAt: indexPath)
 
         if let item = todoItems?[indexPath.row] {
             cell.textLabel?.text = item.title
             
             cell.accessoryType = item.done ? .checkmark : .none
+            
+//            if let colour = FlatSkyBlue().darken(byPercentage: CGFloat(indexPath.row) / CGFloat(todoItems!.count)) {
+            
+//            let cellColour = UIColor(hexString: (selectedCategory?.colour ?? "2D8CF5"))
+//
+//            if let colour = FlatSkyBlue().darken(byPercentage: CGFloat(indexPath.row) / CGFloat(todoItems!.count)) {
+//                cell.backgroundColor = colour
+//                cell.textLabel?.textColor = ContrastColorOf(cellColour!, returnFlat: true)
+//            }
+            
+            
+            if let colour = UIColor(hexString: selectedCategory!.colour)?.darken(byPercentage: CGFloat(indexPath.row) / CGFloat(todoItems!.count)) {
+                cell.backgroundColor = colour
+                cell.textLabel?.textColor = ContrastColorOf(colour, returnFlat: true)
+            }
+            
+            
+            
         } else {
             cell.textLabel?.text = "No items added"
         }
 
         return cell
+    }
+    
+    //MARK: Delete data from swipe
+    override func updateModel(at indexPath: IndexPath) {
+        super.updateModel(at: indexPath)
+        
+        print("In delete item func")
+        
+        if let item = self.todoItems?[indexPath.row] {
+            do {
+                try self.realm.write {
+                    self.realm.delete(item)
+                }
+            } catch {
+                print("Error deleting item, \(error)")
+            }
+            
+            //                tableView.reloadData()
+        }
     }
     
     //MARK: Tableview Delegate Methods
@@ -58,7 +98,6 @@ class ToDoListViewController: UITableViewController {
             do {
                 try realm.write {
                     item.done = !item.done
-//                    realm.delete(item)
                 }
             } catch {
                 print("Error updating item; \(error)")
@@ -70,6 +109,7 @@ class ToDoListViewController: UITableViewController {
         tableView.deselectRow(at: indexPath, animated: true)
         
     }
+    
     
     //    MARK: Add New Items
     
