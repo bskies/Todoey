@@ -81,12 +81,14 @@
                     </tableView>
                     <navigationItem key="navigationItem" title="Items" id="PIX-NU-rTv">
                         <barButtonItem key="rightBarButtonItem" systemItem="add" id="cZN-cg-oTw">
-                            <color key="tintColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                             <connections>
                                 <action selector="addButtonPressed:" destination="bTi-vl-UvD" id="oIm-Jy-MJ8"/>
                             </connections>
                         </barButtonItem>
                     </navigationItem>
+                    <connections>
+                        <outlet property="searchBar" destination="l7a-h1-3sc" id="0Au-CY-1xR"/>
+                    </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="kUf-4h-V9G" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>

@@ -16,14 +16,10 @@ class CategoryViewController: SwipeTableViewController {
     
     var categories: Results<Category>?
     
-//    let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
-    
     override func viewDidLoad() {
         super.viewDidLoad()
 
         loadCategories()
-
-//        tableView.separatorStyle = .none
     }
 
     //MARK: TableView Datasource Methods
@@ -35,9 +31,17 @@ class CategoryViewController: SwipeTableViewController {
 
         let cell = super.tableView(tableView, cellForRowAt: indexPath)
         
-        cell.backgroundColor = UIColor(hexString: categories?[indexPath.row].colour ?? "2D8CF5")
-        
-        cell.textLabel?.text = categories?[indexPath.row].name ?? "No categories added yet."
+        if let category = categories?[indexPath.row] {
+            guard let categoryColour = UIColor(hexString: category.colour) else {
+                fatalError("Bad category colour, \(category.colour)")
+            }
+            
+            cell.backgroundColor = categoryColour
+            
+            cell.textLabel?.text = category.name
+            cell.textLabel?.textColor = ContrastColorOf(categoryColour, returnFlat: true)
+
+        }
         
         return cell
     }
@@ -49,7 +53,6 @@ class CategoryViewController: SwipeTableViewController {
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-//        let destinationVC = segue.destination as! SwipeTableViewController // ToDoListViewController
         let destinationVC = segue.destination as! ToDoListViewController
 
         
@@ -76,13 +79,7 @@ class CategoryViewController: SwipeTableViewController {
     //    func loadCategories(with request: NSFetchRequest<Category> = Category.fetchRequest()) {
     func loadCategories() {
         categories = realm.objects(Category.self)
-        
-        //        do {
-        //            categories = try context.fetch(request)
-        //        } catch {
-        //            print("Error fetching data from context \(error)")
-        //        }
-        //
+
         tableView.reloadData()
     }
 
@@ -97,8 +94,6 @@ class CategoryViewController: SwipeTableViewController {
             } catch {
                 print("Error deleting category, \(error)")
             }
-            
-            //                tableView.reloadData()
         }
     }
     

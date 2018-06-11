@@ -23,8 +23,6 @@ class SwipeTableViewController: UITableViewController, SwipeTableViewCellDelegat
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "Cell", for: indexPath)  as! SwipeTableViewCell
         
-//        cell.textLabel?.text = categories?[indexPath.row].name ?? "No categories added yet."
-        
         cell.delegate = self
 
         return cell
@@ -39,8 +37,6 @@ class SwipeTableViewController: UITableViewController, SwipeTableViewCellDelegat
         guard orientation == .right else { return nil }
         
         let deleteAction = SwipeAction(style: .destructive, title: "Delete") { action, indexPath in
-            //        let deleteAction = SwipeAction(style: .destructive, title: nil) { action, indexPath in
-            
             self.updateModel(at: indexPath)
         }
         
@@ -53,7 +49,6 @@ class SwipeTableViewController: UITableViewController, SwipeTableViewCellDelegat
     func tableView(_ tableView: UITableView, editActionsOptionsForRowAt indexPath: IndexPath, for orientation: SwipeActionsOrientation) -> SwipeTableOptions {
         var options = SwipeTableOptions()
         options.expansionStyle = .destructive
-        //        options.transitionStyle = .border
         return options
     }
     
